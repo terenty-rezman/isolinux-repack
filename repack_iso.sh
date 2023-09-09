@@ -2,14 +2,9 @@
 
 # taken from https://www.unixmen.com/edit-iso-files-using-mkisofs-in-linux/
 
-OUTPUT_ISO="tsagi_rtfe_linux.iso"
-
-WORK_DIR="/tmp/custom_isolinux"
-UNPACKED_ISO_DIR="${WORK_DIR}/unpacked_iso_edit_here" # <--- edit files in this dir! they will appear in the final iso!
-UNPACKED_INITRD_DIR="${WORK_DIR}/unpacked_initrd"
-
 set -e
-set -x
+
+source config_here.sh
 
 cwd=$(pwd)
 

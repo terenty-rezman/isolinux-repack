@@ -2,17 +2,10 @@
 
 # taken from https://www.unixmen.com/edit-iso-files-using-mkisofs-in-linux/
 
-TARGET_ISO="Boot_CD_R3_1_2_NEW_by_Королёв_Дополнительно_обработанный_Грузится.iso"
-
-WORK_DIR="/tmp/custom_isolinux"
-ISO_MOUNT_DIR="${WORK_DIR}/mnt_iso"
-UNPACKED_ISO_DIR="${WORK_DIR}/unpacked_iso_edit_here" # <--- edit files in this dir! they will appear in the final iso!
-UNPACKED_INITRD_DIR="${WORK_DIR}/unpacked_initrd"
-
-INITRD_MOUNT_DIR="${WORK_DIR}/mnt_initrd_edit_here" # <--- edit linux files in this dir! they will appear in the final iso!
-
 set -e
-set -x
+
+# load common cfg vars from file
+source config_here.sh
 
 # install iso tools 
 echo install iso tools: mkisofs
@@ -29,7 +22,7 @@ mkdir -p $UNPACKED_INITRD_DIR
 mkdir -p $INITRD_MOUNT_DIR
 
 # mount iso as readonly and copy all the files to edit them
-sudo mount -t iso9660 -o loop "$TARGET_ISO" "$ISO_MOUNT_DIR"
+sudo mount -t iso9660 -o loop "$INPUT_ISO" "$ISO_MOUNT_DIR"
 cd $ISO_MOUNT_DIR
 
 # copy iso files to edit them later

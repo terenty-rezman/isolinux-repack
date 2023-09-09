@@ -2,12 +2,9 @@
 
 # clean all working files to start over clean
 
-WORK_DIR="/tmp/custom_isolinux"
-ISO_MOUNT_DIR="${WORK_DIR}/mnt_iso"
-INITRD_MOUNT_DIR="${WORK_DIR}/mnt_initrd_edit_here" 
-
 set -e
-set -x
+
+source config_here.sh
 
 # clear from previous run
 # unmount iso if already mounted from previous run
