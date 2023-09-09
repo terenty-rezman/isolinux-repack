@@ -8,9 +8,9 @@ cwd=$(pwd)
 
 WORK_DIR="${cwd}/extracted_files"
 ISO_MOUNT_DIR="${WORK_DIR}/mnt_iso"
-UNPACKED_ISO_DIR="${WORK_DIR}/unpacked_iso_edit_here" # <--- edit files in this dir! they will appear in the final iso!
+UNPACKED_ISO_DIR="${WORK_DIR}/iso_edit_here" # <--- edit files in this dir! they will appear in the final iso!
 UNPACKED_INITRD_DIR="${WORK_DIR}/unpacked_initrd"
-INITRD_MOUNT_DIR="${WORK_DIR}/mnt_initrd_edit_here" # <--- edit linux files in this dir! they will appear in the final iso!
+INITRD_MOUNT_DIR="${WORK_DIR}/initrd_edit_here" # <--- edit linux files in this dir! they will appear in the final iso!
 TSAGI_ISO_TOOLS_DIR="${UNPACKED_ISO_DIR}/TSAGI_ISO_TOOLS"
 
 # enable debug

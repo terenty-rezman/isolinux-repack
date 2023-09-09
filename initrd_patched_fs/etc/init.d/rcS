@@ -1,0 +1,171 @@
+#!/bin/sh
+/bin/mount -a
+/bin/mount -t sysfs sysfs /sys
+# below getting rid of ram being mounted ro
+/bin/mount -o remount rw /
+mkdir /lib/modules
+ln -s /modules /lib/modules/`uname -r`
+/sbin/depmod -a
+
+# install hotplug helper for loading firmware on the AIM arinc board.
+# - The firmware is in directory /lib/firmware 
+# - It uses firmware.sh script in /lib/udev/ 
+echo /sbin/mdev >/proc/sys/kernel/hotplug
+
+/sbin/modprobe scsi_mod
+/sbin/modprobe mptbase
+/sbin/modprobe mptscsih
+/sbin/modprobe scsi_transport_spi
+/sbin/modprobe mptspi
+/sbin/modprobe libata
+/sbin/modprobe sd_mod
+/sbin/modprobe ata_generic
+/sbin/modprobe ata_piix
+/sbin/modprobe e1000e
+/sbin/modprobe e1000
+/sbin/modprobe mii
+/sbin/modprobe vmxnet3
+/sbin/modprobe ahci
+
+# set keepalive values
+/sbin/sysctl -w net.ipv4.tcp_keepalive_intvl=2
+/sbin/sysctl -w net.ipv4.tcp_keepalive_time=20
+/sbin/sysctl -w net.ipv4.tcp_keepalive_probes=9
+
+ifconfig eth0 0.0.0.0
+ifconfig eth1 0.0.0.0
+/sbin/route add default dev eth0
+
+# 500 ms seems to be the minimum retransmit time 
+/sbin/sysctl -w net.ipv4.neigh.eth0.retrans_time_ms=500
+/sbin/sysctl -w net.ipv4.neigh.eth0.mcast_solicit=5
+
+mkdir /var/bootpc
+mkdir /var/comedi
+mkdir /var/rt_app
+IPADDR=10.30.204.254
+
+eval `/sbin/bootpc --returniffail`
+
+# bootpc has updated Network the values 
+IP2ADDR=`echo ${IPADDR} |awk 'BEGIN {FS="."} {print "192.168.123."$4}'`
+
+echo ${IPADDR} > /var/bootpc/IPADDR
+echo ${SERVER} > /var/bootpc/SERVER
+echo ${BOOTFILE} > /var/bootpc/BOOTFILE
+echo ${GATEWAY} > /var/bootpc/GATEWAY
+echo ${GATEWAYS} > /var/bootpc/GATEWAYS
+echo ${BROADCAST} > /var/bootpc/BROADCAST
+echo ${NETMASK} > /var/bootpc/NETMASK
+echo ${IP2ADDR} > /var/bootpc/IP2ADDR 
+echo ${TIMESRVS} > /var/bootpc/TIMESRVS
+
+ifconfig eth0 ${IPADDR} netmask ${NETMASK} broadcast ${BROADCAST}
+ifconfig eth1 ${IP2ADDR} netmask 255.255.255.0 up
+
+# for some reason eth1 starts not direct, so try to activate it directly
+# by the following 2 commands (until we find a better way)
+ifconfig
+ping -c 1 $IP2ADDR
+sleep 4
+
+if [ -n "$GATEWAYS" ]; then
+set - ${GATEWAYS} ; GATEWAY=$1
+fi
+
+if [ -z "$GATEWAY" ];
+then
+  /sbin/route add default gw ${SERVER} eth0
+elif [ "$GATEWAY" == "0.0.0.0" ];
+then
+  /sbin/route add default gw ${SERVER} eth0
+else
+  /sbin/route add default gw ${GATEWAY} eth0
+fi
+
+# create ntp.conf
+cp /etc/ntp.conf.src /etc/ntp.conf
+if [ -n $TIMESRVS_1 ]
+then
+  # when a timesever is specified take the first one as prefered
+  # and always make the bootpc as a backup time server.
+  echo "server ${TIMESRVS_1} iburst prefer minpoll 4 maxpoll 4" >> /etc/ntp.conf
+  echo "server ${SERVER} iburst minpoll 4 maxpoll 4" >> /etc/ntp.conf
+else
+  # no timeservers are specified so take the bootpc as the time server
+  echo "server ${SERVER} iburst prefer minpoll 4 maxpoll 4" >> /etc/ntp.conf
+fi
+if [ -n $TIMESRVS_2 ]
+then
+  # add the second time server.
+  echo "server ${TIMESRVS_2} iburst minpoll 4 maxpoll 4" >> /etc/ntp.conf
+fi
+if [ -n $TIMESRVS_3 ]
+then
+  # add the 3e time server.
+  echo "server ${TIMESRVS_3} iburst minpoll 4 maxpoll 4" >> /etc/ntp.conf
+fi
+
+# get saved ntp drift file from the bootpc
+tftp -g -l /var/lib/ntp/drift -r drift.${IPADDR} ${SERVER}
+
+# get localtime file to set timezone info
+tftp -g -l /etc/localtime -r localtime ${SERVER}
+
+
+# copy ntp drift file to bootpc
+echo "0 * * * * tftp -p -l /var/lib/ntp/drift -r drift.${IPADDR} ${SERVER}" >> /var/spool/cron/crontabs/root
+
+# hwclock syn
+echo "0 * * * * hwclock -wu" >> /var/spool/cron/crontabs/root
+
+/usr/sbin/crond
+
+# Set lo 
+ifconfig lo 127.0.0.1
+
+
+hostname localhost
+#
+/etc/init.d/ssh start
+
+/usr/sbin/ntpdate -b ${SERVER}
+
+/usr/sbin/ntpd -g
+
+
+/sbin/hdparm -W 0 /dev/hda
+
+/usr/sbin/httpd -h /www
+
+/sbin/modprobe aim_civ
+AIM_CIV_MAJOR_NUM=`grep aim_civ /proc/devices | cut -f 1 -d ' '`
+mknod -m 666 /dev/aim_civ c $AIM_CIV_MAJOR_NUM 0
+
+/sbin/modprobe scramnetgt
+SCGT_MAJOR_NUM=`grep scgt /proc/devices | cut -f 1 -d ' '`
+mknod -m 666 /dev/scgt0 c $SCGT_MAJOR_NUM 0
+
+/sbin/modprobe reflmem
+
+/sbin/modprobe comedi comedi_autoconfig=0
+/sbin/modprobe adv_pci_dio
+/sbin/modprobe plx9030
+/sbin/modprobe mc_670x
+/sbin/modprobe cb_pcidas64
+/sbin/modprobe ni_pcimio
+
+#attach all found and supported pci device
+/root/config_comedi.sh
+
+ln -s /dev/sda5 /dev/rtfe_disk
+# When the RTFE is writing to the console it takes 4 mS,
+# when the rtfe console output is redirected through the tee program it take less than 0.2 mS
+/root/linux_rtfe | tee /dev/null &
+
+# set root password to "1"
+passwd << EOF
+1
+1
+EOF
+echo root password is 1

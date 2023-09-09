@@ -11,10 +11,6 @@ source config_here.sh
 echo install iso tools: mkisofs
 sudo apt install mkisofs
 
-# clear from previous run
-# unmount iso if already mounted from previous run
-sudo umount "$ISO_MOUNT_DIR" || true
-
 # create temp folder for iso files
 mkdir -p $ISO_MOUNT_DIR
 mkdir -p $UNPACKED_ISO_DIR

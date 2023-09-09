@@ -4,7 +4,7 @@
     (paths can be configured in `config_here.sh`)
  3) now make naccessary editions to extracted files: <br>
     run `./apply_initrd_patch.sh` to copy patched root fs files from `patched_initrd_fs` dir to __output.iso__ <br>
-    or make manual editions to files: <br>
+    or make manual editions to files located here: <br>
     `/tmp/custom_isolinux/mnt_initrd_edit_here/` contains initrd root fs that will be exported to __output.iso__
     `/tmp/custom_isolinux/unpacked_iso_edit_here/` contains files that will be placed to / of __output.iso__ <br>
  4) run `./repack_iso.sh` to create new __iso__ with modified files (content is taken from `/tmp/custom_isolinux/mnt_initrd_edit_here/` and `/tmp/custom_isolinux/unpacked_iso_edit_here/`)
