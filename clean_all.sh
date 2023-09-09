@@ -4,7 +4,7 @@
 
 WORK_DIR="/tmp/custom_isolinux"
 ISO_MOUNT_DIR="${WORK_DIR}/mnt_iso"
-INITRD_MOUNT_DIR="${WORK_DIR}/mnt_initrd" 
+INITRD_MOUNT_DIR="${WORK_DIR}/mnt_initrd_edit_here" 
 
 set -e
 set -x
