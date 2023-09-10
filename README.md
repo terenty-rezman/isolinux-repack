@@ -6,7 +6,7 @@
  - make modifications to initrd files (modified files are copied from `initrd_patched_fs`)
  - repack new iso
 ## how to use scripts
- 1) put all these __*.sh__ scripts and __target iso__ (e.g. Boot_CD_R3_1_2_NEW_by_Королёв_Дополнительно_обработанный_Грузится.iso) into the same dir
+ 1) put __target iso__ into current dir (Boot_CD_R3_1_2_NEW_by_Королёв_Дополнительно_обработанный_Грузится.iso)
  2) run `./unpack_iso.sh` to unpack target iso & initrd files into your filesystem (into `./extracted_files` by defaullt) <br>
     (paths can be configured in `config_here.sh`)
  3) now make naccessary editions to extracted files: <br>
