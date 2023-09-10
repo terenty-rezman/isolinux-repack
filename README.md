@@ -1,4 +1,6 @@
-# isolinux-repack
+# isolinux-repack tools
+  login: root <br>
+  password: 1
 ## what scripts do
  - unpack given iso (originally based on Boot_CD_R3_1_2_NEW_by_Королёв_Дополнительно_обработанный_Грузится.iso)
  - make modifications to initrd files (modified files are copied from `initrd_patched_fs`)
