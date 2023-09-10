@@ -6,6 +6,8 @@ if [ "`id -u`" -eq 0 ]; then
   PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin
 fi
 
+NO_FORMAT="\e[0m"
+C_YELLOW1="\e[38;5;178m"
 
 if [ "$BASH" ]; then
   PS1='\u@\H:\w\$ '
@@ -13,11 +15,11 @@ else
   if [ "`id -u`" -eq 0 ]; then
     # root user
     # PS1=`whoami`@`hostname`:'$PWD# '
-    PS1='\n\e[31m\e[1m\u@\h\e[0m \e[94m\w\n\e[31m\e[1m#\e[0m\e[0m\e[39m\e[49m '
+    PS1="${C_YELLOW1}\u@\h \w${NO_FORMAT} "
   else
     # non root user
     # PS1=`whoami`@`hostname`:'$PWD $'
-    PS1='\n\e[92m\e[1m\u@\h\e[0m \e[94m\w\n\e[92m\e[1m$\e[0m\e[0m\e[39m\e[49m '
+    PS1="${C_YELLOW1}\u@\h \w${NO_FORMAT} "
   fi
 fi
 
