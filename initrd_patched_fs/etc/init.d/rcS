@@ -125,7 +125,8 @@ echo "0 * * * * hwclock -wu" >> /var/spool/cron/crontabs/root
 ifconfig lo 127.0.0.1
 
 
-hostname localhost
+# hostname localhost
+hostname rtfe
 #
 /etc/init.d/ssh start
 
@@ -168,4 +169,4 @@ passwd << EOF
 1
 1
 EOF
-echo root password is 1
+echo ROOT PASSWORD: \"1\"

@@ -1,0 +1,28 @@
+# /etc/profile: system-wide .profile file for the Bourne shell (sh(1))
+# and Bourne compatible shells (bash(1), ksh(1), ash(1), ...).
+
+PATH="/usr/local/bin:/usr/bin:/bin:"
+if [ "`id -u`" -eq 0 ]; then
+  PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin
+fi
+
+
+if [ "$BASH" ]; then
+  PS1='\u@\H:\w\$ '
+else
+  if [ "`id -u`" -eq 0 ]; then
+    # root user
+    # PS1=`whoami`@`hostname`:'$PWD# '
+    PS1='\n\e[31m\e[1m\u@\h\e[0m \e[94m\w\n\e[31m\e[1m#\e[0m\e[0m\e[39m\e[49m '
+  else
+    # non root user
+    # PS1=`whoami`@`hostname`:'$PWD $'
+    PS1='\n\e[92m\e[1m\u@\h\e[0m \e[94m\w\n\e[92m\e[1m$\e[0m\e[0m\e[39m\e[49m '
+  fi
+fi
+
+export PATH PS1
+
+umask 022
+
+alias ll='ls $LS_OPTIONS -all -h'
