@@ -1,0 +1,27 @@
+#<file system>	<mount point>	<type>	<options>	<dump>	<pass>
+# tsagi commented
+#/dev/root	/		auto	defaults,errors=remount-ro	0 0
+proc		/proc		proc	defaults			0 0
+none		/dev/pts	devpts	gid=5,mode=620			0 0
+# tsagi commented
+#relayfs         /mnt/relayfs    relayfs rw                              0 0
+debugfs         /mnt/debugfs    debugfs rw                              0 0
+# tsagi commented
+#/dev/hda1	/mnt/hda1	auto
+#/dev/hda2	/mnt/hda2	auto
+#/dev/hda3	/mnt/hda3	auto
+#/dev/hda4	/mnt/hda4	auto
+#/dev/hdb1	/mnt/hdb1	auto
+#/dev/hdb2	/mnt/hdb2	auto
+#/dev/hdb3	/mnt/hdb3	auto
+#/dev/hdb4	/mnt/hdb4	auto
+#/dev/hdc1	/mnt/hdc1	auto
+#/dev/hdc2	/mnt/hdc2	auto
+#/dev/hdc3	/mnt/hdc3	auto
+#/dev/hdc4	/mnt/hdc4	auto
+#/dev/hdd1	/mnt/hdd1	auto
+#/dev/hdd2	/mnt/hdd2	auto
+#/dev/hdd3	/mnt/hdd3	auto
+#/dev/hdd4	/mnt/hdd4	auto
+
+

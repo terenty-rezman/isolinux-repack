@@ -12,12 +12,14 @@ ln -s /modules /lib/modules/`uname -r`
 # - It uses firmware.sh script in /lib/udev/ 
 echo /sbin/mdev >/proc/sys/kernel/hotplug
 
-/sbin/modprobe scsi_mod
-/sbin/modprobe mptbase
-/sbin/modprobe mptscsih
+# tsagi commented
+#/sbin/modprobe scsi_mod
+#/sbin/modprobe mptbase
+#/sbin/modprobe mptscsih
 /sbin/modprobe scsi_transport_spi
-/sbin/modprobe mptspi
-/sbin/modprobe libata
+# tsagi commented
+#/sbin/modprobe mptspi
+#/sbin/modprobe libata
 /sbin/modprobe sd_mod
 /sbin/modprobe ata_generic
 /sbin/modprobe ata_piix
@@ -25,7 +27,8 @@ echo /sbin/mdev >/proc/sys/kernel/hotplug
 /sbin/modprobe e1000
 /sbin/modprobe mii
 /sbin/modprobe vmxnet3
-/sbin/modprobe ahci
+# tsagi commented
+#/sbin/modprobe ahci
 
 # set keepalive values
 /sbin/sysctl -w net.ipv4.tcp_keepalive_intvl=2
@@ -66,6 +69,7 @@ ifconfig eth1 ${IP2ADDR} netmask 255.255.255.0 up
 # for some reason eth1 starts not direct, so try to activate it directly
 # by the following 2 commands (until we find a better way)
 ifconfig
+# tsagi commented
 #ping -c 1 $IP2ADDR
 sleep 4
 
@@ -112,6 +116,7 @@ tftp -g -l /var/lib/ntp/drift -r drift.${IPADDR} ${SERVER}
 # get localtime file to set timezone info
 tftp -g -l /etc/localtime -r localtime ${SERVER}
 
+mkdir -p /var/spool/cron/crontabs
 
 # copy ntp drift file to bootpc
 echo "0 * * * * tftp -p -l /var/lib/ntp/drift -r drift.${IPADDR} ${SERVER}" >> /var/spool/cron/crontabs/root
@@ -134,8 +139,8 @@ hostname rtfe
 
 /usr/sbin/ntpd -g
 
-
-/sbin/hdparm -W 0 /dev/hda
+# tsagi commented
+#/sbin/hdparm -W 0 /dev/hda
 
 /usr/sbin/httpd -h /www
 
@@ -151,7 +156,8 @@ mknod -m 666 /dev/scgt0 c $SCGT_MAJOR_NUM 0
 
 /sbin/modprobe comedi comedi_autoconfig=0
 /sbin/modprobe adv_pci_dio
-/sbin/modprobe plx9030
+# tsagi commented
+# /sbin/modprobe plx9030
 /sbin/modprobe mc_670x
 /sbin/modprobe cb_pcidas64
 /sbin/modprobe ni_pcimio
@@ -162,6 +168,7 @@ mknod -m 666 /dev/scgt0 c $SCGT_MAJOR_NUM 0
 ln -s /dev/sda5 /dev/rtfe_disk
 # When the RTFE is writing to the console it takes 4 mS,
 # when the rtfe console output is redirected through the tee program it take less than 0.2 mS
+# tsagi moved to /etc/init.d/rcS_wrapper
 #/root/linux_rtfe | tee /dev/null &
 
 # set root password to "1"
