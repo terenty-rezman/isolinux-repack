@@ -1,0 +1,11 @@
+#!/bin/sh
+/bin/mount -a
+/bin/mount -t sysfs sysfs /sys
+# below getting rid of ram being mounted ro
+/bin/mount -o remount rw /
+
+/sbin/syslogd
+
+source /etc/init.d/rcS 2>&1 | tee /var/log/startup.log
+
+/root/linux_rtfe 2>&1 | tee /var/log/rtfe.log &
